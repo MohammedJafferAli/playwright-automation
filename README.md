@@ -22,7 +22,7 @@ A comprehensive end-to-end testing framework built with Playwright and TypeScrip
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/MohammedJafferAli/playwright-automation.git
    cd playwright_automation
    ```
 
