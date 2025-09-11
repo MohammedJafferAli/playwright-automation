@@ -20,18 +20,28 @@ A comprehensive end-to-end testing framework built with Playwright and TypeScrip
 
 ### First-time Setup
 
-1. **Clone the repository**
+1. **Clone the test automation repository**
    ```bash
    git clone https://github.com/MohammedJafferAli/playwright-automation.git
    cd playwright_automation
    ```
 
-2. **Install dependencies**
+2. **Clone and setup the practice application**
    ```bash
+   git clone https://github.com/MohammedJafferAli/pw-practice-app-ts.git
+   cd pw-practice-app-ts
+   npm install --force
+   npm start
+   ```
+   The application will start on `http://localhost:4200`
+
+3. **Install test framework dependencies** (in a new terminal)
+   ```bash
+   cd playwright_automation
    npm install
    ```
 
-3. **Install Playwright browsers**
+4. **Install Playwright browsers**
    ```bash
    npx playwright install
    ```

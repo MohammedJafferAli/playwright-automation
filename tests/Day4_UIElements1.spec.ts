@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { delay } from "rxjs-compat/operator/delay";
+
 
 test.beforeEach("Playwright Test application", async ({ page }) => {
     await page.goto("http://localhost:4200/");
@@ -128,24 +128,74 @@ test.describe("Modal and Overlays", () => {
         });
     });
 
-    test.only('Handling web tables', async({page})=>{
+    test('Handling web tables', async ({ page }) => {
+        // Navigate to Smart Table
         await page.getByText('Tables & Data').click();
         await page.getByText('Smart Table').click();
 
-        // 1 get the value from the table using any text and perform any action
-        //get the row by email ID then update the age
-
-        const targetRowByName = page.getByRole('row', {name : 'sevan@outlook.com'});
+        // Update age by email
+        const targetRowByName = page.getByRole('row', { name: 'sevan@outlook.com' });
         await targetRowByName.locator('.nb-edit').click();
+        await updateAge(page, "25");
 
-        await page.locator('input-editor').getByPlaceholder('Age').clear();
-        await page.locator('input-editor').getByPlaceholder('Age').fill("25");
-        await page.locator('.nb-checkmark').click();
+        // Navigate to page 2 and update customer details
+        await page.locator('ng2-smart-table-pager').getByText('2').click();
 
-        // get the value from the table using any duplicate value in the page filter then make changes
-        const pagination = page.locator('ng2-smart-table-pager')
-        await pagination.getByText('2').click();
+        // Update customer age
+        await updateCustomerByID(page, "11");
+        await updateAge(page, "20");
 
-        
-    })
+        // Update customer email
+        await updateCustomerByID(page, "11");
+        await updateEmail(page, "Test01@test.com");
+
+        async function updateCustomerByID(page, id) {
+            const targetRowByID = page.getByRole('row', { name: id })
+                .filter({ has: page.locator('td').nth(1).getByText(id) });
+            await targetRowByID.locator('.nb-edit').click();
+        }
+
+        async function updateAge(page, age) {
+            const ageInput = page.locator('input-editor').getByPlaceholder('Age');
+            await ageInput.clear();
+            await ageInput.fill(age);
+            await page.locator('.nb-checkmark').click();
+        }
+
+        async function updateEmail(page, email) {
+            const emailInput = page.locator('input-editor').getByPlaceholder('E-mail');
+            await emailInput.clear();
+            await emailInput.fill(email);
+            await page.locator('.nb-checkmark').click();
+        }
+    });
+
+
+    test('Handling Web Tables - Search customer by Age', async ({ page }) => {
+        await page.getByText('Tables & Data').click();
+        await page.getByText('Smart Table').click();
+
+        //Task to search customer by age with different values and check if it return the correct values
+        const searchAgeInput = page.locator('input-filter').getByPlaceholder('Age');
+        const ageToSearch = [20, 30, 40, 200];
+
+        for (const age of ageToSearch) {
+            await searchAgeInput.fill(age.toString());
+            await page.waitForTimeout(500);
+
+            const ageCellValue = page.locator('table tbody tr td:last-child');
+            for (const cell of await ageCellValue.all()) {
+
+                if(age === 200){
+                    await expect(page.locator('table tbody tr')).toHaveCount(0);
+                    continue;
+                }
+                else{
+                    await expect(cell).toHaveText(age.toString());
+                }
+                
+            }
+        }
+
+    });
 });
