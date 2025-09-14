@@ -186,16 +186,66 @@ test.describe("Modal and Overlays", () => {
             const ageCellValue = page.locator('table tbody tr td:last-child');
             for (const cell of await ageCellValue.all()) {
 
-                if(age === 200){
+                if (age === 200) {
                     await expect(page.locator('table tbody tr')).toHaveCount(0);
                     continue;
                 }
-                else{
+                else {
                     await expect(cell).toHaveText(age.toString());
                 }
-                
+
             }
         }
 
     });
+
+
+
+    test('Handling Date Picker', async ({ page }) => {
+        await page.getByTitle('Forms').click();
+        await page.getByTitle('Datepicker').click();
+
+        const datePicketInput = page.getByPlaceholder('Form Picker');
+        await datePicketInput.click();
+
+        // Function to select any future date
+        async function selectFutureDate(daysInFuture: number) {
+            const date = new Date();
+            date.setDate(date.getDate() + daysInFuture);
+            
+            const targetDay = date.getDate();
+            const targetMonthShort = date.toLocaleString('default', { month: 'short' });
+             const targetMonthLong = date.toLocaleString('default', { month: 'long' });
+            const targetYear = date.getFullYear();
+            const expectedDate = `${targetMonthShort} ${targetDay}, ${targetYear}`;
+
+            await datePicketInput.click();
+
+            let currentMonthYear = await page.locator('nb-calendar-view-mode').textContent() || '';
+            const expectedMonthYear = `${targetMonthLong} ${targetYear}`;
+
+            // Navigate to target month/year
+            while (!currentMonthYear.includes(expectedMonthYear)) {
+                await page.locator('[data-name="chevron-right"]').click();
+                currentMonthYear = await page.locator('nb-calendar-view-mode').textContent() || '';
+            }
+
+            // Select the target day
+            await page.locator('[class="day-cell ng-star-inserted"]')
+                      .getByText(targetDay.toString(), { exact: true })
+                      .click();
+
+            await expect(datePicketInput).toHaveValue(expectedDate);
+        }
+
+        // Select date 30 days in future
+        await selectFutureDate(30);
+
+        // Select date 90 days in future 
+        await selectFutureDate(90);
+
+        // Select date 180 days in future
+        await selectFutureDate(180);
+});
+
 });
