@@ -6,8 +6,8 @@ on:
   workflow_dispatch:  # Manual trigger
   
 jobs:
-  test:
-    timeout-minutes: 60
+  installation:
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -18,37 +18,61 @@ jobs:
       run: npm ci
     - name: Install Playwright
       run: npx playwright install --with-deps chromium webkit
+    - name: Cache node modules
+      uses: actions/cache@v3
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
+  test:
+    needs: installation
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: lts/*
+    - name: Restore node modules
+      uses: actions/cache@v3
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
     - name: Run tests
       run: npx playwright test --project=chromium --project=webkit
+
+  report:
+    needs: test
+    if: always()
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
     - name: Generate Allure Report
-      if: always()
       timeout-minutes: 5
       run: |
         npm install -g allure-commandline
         allure generate ./allure-results --clean
     - name: Upload Allure Report
       uses: actions/upload-artifact@v4
-      if: always()
       with:
         name: allure-report
         path: allure-report/
         retention-days: 30
     
     - name: Zip Allure Report
-      if: always()
       run: zip -r allure-report.zip allure-report/
     
     - name: Send Email with Report
-      if: always()
       uses: dawidd6/action-send-mail@v3
       with:
         server_address: smtp.gmail.com
         server_port: 587
-        username: ${{ secrets.GMAIL_USERNAME }} # Ensure this secret exists in your repository/organization settings
-        password: ${{ secrets.GMAIL_APP_PASSWORD }}
+        username: ${{ secrets.EMAIL_USERNAME }}
+        password: ${{ secrets.EMAIL_PASSWORD }}
         subject: 'Playwright Test Results - ${{ github.repository }}'
         to: "jaffercharliebe@gmail.com"
-        from: ${{ secrets.GMAIL_USERNAME }}
+        from: ${{ secrets.EMAIL_SENDER }}        
         body: |
           Test execution completed for commit: ${{ github.sha }}
           
