@@ -72,7 +72,7 @@ test('Assertions',async ({page})=>{
     expect (setValue).toEqual(5);
 
     const basicFormButton = page.locator("nb-card").filter({ hasText: "Basic form" }).getByRole("button");
-    let buttonText : String = await basicFormButton.textContent();
+    let buttonText = await basicFormButton.textContent() ?? "";
     expect (buttonText).toEqual("Submit");
     
     //Locator assertion 

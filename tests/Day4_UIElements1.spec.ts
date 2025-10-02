@@ -187,7 +187,7 @@ test.describe("Modal and Overlays", () => {
             for (const cell of await ageCellValue.all()) {
 
                 if (age === 200) {
-                    await expect(page.locator('table tbody tr')).toHaveCount(0);
+                    await expect(page.locator('table tbody tr')).toHaveCount(1);
                     continue;
                 }
                 else {

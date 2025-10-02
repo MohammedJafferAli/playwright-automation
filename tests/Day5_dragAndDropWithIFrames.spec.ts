@@ -7,7 +7,7 @@ test.describe("Automate drag and drop with IFrames", () => {
         await page.setViewportSize({ width: 1920, height: 1080 });
     });
 
-    test.only("Drag and Drop with IFrames", async ({ page }) => {
+    test("Drag and Drop with IFrames", async ({ page }) => {
         await page.getByText("DragAndDrop").click();
 
         // Get iframe locators
