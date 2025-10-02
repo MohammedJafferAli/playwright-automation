@@ -1,6 +1,6 @@
 # Playwright Automation Framework
 
-A comprehensive end-to-end testing framework built with Playwright and TypeScript for web application automation.
+Comprehensive end-to-end testing framework built with Playwright and TypeScript for web application automation.
 
 ## Features
 
@@ -46,7 +46,7 @@ A comprehensive end-to-end testing framework built with Playwright and TypeScrip
    npx playwright install
    ```
 
-## Test Structure
+## Project Structure
 
 ```
 tests/
@@ -64,6 +64,7 @@ page-objects/
 ├── datePickerPage.ts          # Date picker page object
 ├── formsLayoutPage.ts         # Forms layout page object
 ├── navigationPage.ts          # Navigation page object
+├── helperBase.ts              # Base helper class
 └── pageManager.ts             # Central page manager for all page objects
 ```
 
@@ -88,7 +89,7 @@ npx playwright test --project=webkit
 
 ### 3. Run Specific Test File
 ```bash
-npx playwright test tests/AutoWaits.spec.ts
+npx playwright test tests/Day3_autoWaits.spec.ts
 ```
 
 ### 4. Run Tests in Headed Mode (Visible Browser)
@@ -158,17 +159,7 @@ The framework is configured via `playwright.config.ts`:
 
 ## Writing Tests
 
-### Basic Test Structure
-```typescript
-import { test, expect } from '@playwright/test';
-
-test('test description', async ({ page }) => {
-  await page.goto('http://localhost:4200/');
-  await expect(page.locator('h1')).toHaveText('Expected Text');
-});
-```
-
-### Using Page Object Model
+### Page Object Model Pattern (Recommended)
 ```typescript
 import test from "playwright/test";
 import { PageManager } from "../../page-objects/pageManager";
@@ -182,6 +173,22 @@ test('Handle Forms layout page', async ({ page }) => {
   await pm.navigateTo().navigateToFormLayoutPage();
   await pm.onFormsLayoutPage().submitFormUsingTheGrid("User", "Password", "Option 1");
 });
+
+test('Handle Datepicker page', async ({ page }) => {
+  const pm = new PageManager(page);
+  await pm.navigateTo().navigateToDatepickerPage();
+  await pm.onDatepickerPage().selectDateFromCommonDatePickerFromCurrentDate("5");
+});
+```
+
+### Basic Test Structure
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('test description', async ({ page }) => {
+  await page.goto('http://localhost:4200/');
+  await expect(page.locator('h1')).toHaveText('Expected Text');
+});
 ```
 
 ### Using Hooks
@@ -193,13 +200,14 @@ test.beforeEach(async ({ page }) => {
 
 ## Best Practices
 
-1. **Use Auto-waiting**: Playwright automatically waits for elements
-2. **Prefer `expect()` assertions**: Use Playwright's built-in assertions
-3. **Use Page Object Model**: Framework implements POM pattern with PageManager for better maintainability
-4. **Handle Dynamic Content**: Use proper waiting strategies for AJAX/dynamic content
-5. **Cross-browser Testing**: Run tests across all configured browsers
-6. **Organize Tests**: Group related tests in appropriate directories (coreTopics, pageObjectTest)
-7. **Use PageManager**: Centralized access to all page objects through PageManager class
+1. **Use Page Object Model**: Framework implements POM pattern with PageManager for better maintainability
+2. **Use PageManager**: Centralized access to all page objects through PageManager class
+3. **Use Auto-waiting**: Playwright automatically waits for elements
+4. **Prefer `expect()` assertions**: Use Playwright's built-in assertions
+5. **Handle Dynamic Content**: Use proper waiting strategies for AJAX/dynamic content
+6. **Cross-browser Testing**: Run tests across all configured browsers
+7. **Organize Tests**: Group related tests in appropriate directories (coreTopics, pageObjectTest)
+8. **Follow Naming Conventions**: Use camelCase for files and meaningful test descriptions
 
 ## Troubleshooting
 
@@ -223,8 +231,8 @@ test.beforeEach(async ({ page }) => {
 # Open Playwright Inspector
 npx playwright test --debug
 
-# Generate test code
-npx playwright codegen https://example.com
+# Generate test code for the practice app
+npx playwright codegen http://localhost:4200
 
 # Check Playwright version
 npx playwright --version
@@ -249,11 +257,12 @@ The framework is configured for CI environments with:
 
 ## Contributing
 
-1. Follow TypeScript best practices
-2. Add appropriate test descriptions
-3. Use meaningful locators
-4. Include proper assertions
-5. Update documentation for new features
+1. Follow TypeScript and camelCase naming conventions
+2. Use Page Object Model pattern with PageManager
+3. Add descriptive test names and comments
+4. Use meaningful locators and proper assertions
+5. Test across multiple browsers
+6. Update documentation for new features
 
 ## Support
 
