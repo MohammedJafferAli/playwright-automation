@@ -3,6 +3,7 @@ name: Playwright Tests
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:  # Manual trigger
   
 jobs:
   test:
@@ -19,14 +20,43 @@ jobs:
       run: npx playwright install --with-deps chromium webkit
     - name: Run tests
       run: npx playwright test --project=chromium --project=webkit
-    - name: Generate HTML report
+    - name: Generate Allure Report
       if: always()
       timeout-minutes: 5
       run: |
-        npx playwright show-report || (echo "Report generation timed out, retrying..." && npx playwright show-report)
-    - uses: actions/upload-artifact@v4
+        npm install -g allure-commandline
+        allure generate ./allure-results --clean
+    - name: Upload Allure Report
+      uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: playwright-report
-        path: playwright-report/
+        name: allure-report
+        path: allure-report/
         retention-days: 30
+    
+    - name: Zip Allure Report
+      if: always()
+      run: zip -r allure-report.zip allure-report/
+    
+    - name: Send Email with Report
+      if: always()
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: smtp.gmail.com
+        server_port: 587
+        username: ${{ secrets.GMAIL_USERNAME }} # Ensure this secret exists in your repository/organization settings
+        password: ${{ secrets.GMAIL_APP_PASSWORD }}
+        subject: 'Playwright Test Results - ${{ github.repository }}'
+        to: "jaffercharliebe@gmail.com"
+        from: ${{ secrets.GMAIL_USERNAME }}
+        body: |
+          Test execution completed for commit: ${{ github.sha }}
+          
+          Repository: ${{ github.repository }}
+          Branch: ${{ github.ref_name }}
+          Workflow: ${{ github.workflow }}
+          
+          Please find the Allure test report attached.
+          
+          View full results: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        attachments: allure-report.zip

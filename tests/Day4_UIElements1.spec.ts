@@ -82,7 +82,7 @@ test.describe("Modal and Overlays", () => {
         for (const color in colors) {
             if (color !== "Corporate") {
                 await optionsList.filter({ hasText: color }).click();
-                await expect(globalHeader).toHaveCSS('background-color', colors[color]);
+                await expect(globalHeader).toHaveCSS('background-color', colors[color as keyof typeof colors]);
                 await dropDownTheme.click();
             }
         }
