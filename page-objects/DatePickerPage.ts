@@ -1,12 +1,12 @@
 import { Page, expect } from "@playwright/test";
+import { HelperBase } from './helperBase';
 
-export class DatepickerPage {
-
-    private readonly page: Page;
+export class DatepickerPage extends HelperBase {
 
     constructor(page: Page) {
-        this.page = page;
+        super(page);
     }
+    
     async selectDateFromCommonDatePickerFromCurrentDate(daysInFuture: string) {
 
         const datePicketInput = this.page.getByPlaceholder('Form Picker');
@@ -28,7 +28,6 @@ export class DatepickerPage {
 
         await expect(datePickerInput).toHaveValue(`${formatDate(startDate)} - ${formatDate(endDate)}`);
     }
-
     private async selectSpecificDate(targetDate: Date) {
         const targetDay = targetDate.getDate();
         const targetMonth = targetDate.toLocaleString('default', { month: 'long' });
