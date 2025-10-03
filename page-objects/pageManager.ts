@@ -1,8 +1,8 @@
 import { Page } from "playwright";
 // Inconsistent import formatting - DatepickerPage import uses curly braces without space
-import { NavigationPage } from "./navigationPage";
-import { FormsLayoutPage } from "./formsLayoutPage";
-import { DatepickerPage } from "./datePickerPage";
+import { NavigationPage } from "./NavigationPage";
+import { FormsLayoutPage } from "./FormsLayoutPage";
+import { DatepickerPage } from "./DatePickerPage";
 
 
 export class PageManager {

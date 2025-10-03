@@ -39,6 +39,10 @@ jobs:
       with:
         path: node_modules
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+    - name: Install dependencies if cache miss
+      run: npm ci
+    - name: Install Playwright browsers
+      run: npx playwright install --with-deps chromium webkit
     - name: Run tests
       run: npm run test
 
