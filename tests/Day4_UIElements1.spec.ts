@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 
 test.beforeEach("Playwright Test application", async ({ page }) => {
-    await page.goto("http://localhost:4200/");
+    await page.goto("/");
 });
 
 test.describe("Automate Form layout elements", () => {

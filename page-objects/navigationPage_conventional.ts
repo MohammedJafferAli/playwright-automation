@@ -1,6 +1,6 @@
 import { Locator, Page } from "playwright";
 
-export class NavigationPage {
+export class NavigationPage_conventional {
 
     private readonly page: Page;
     readonly formLayoutMenuItem : Locator

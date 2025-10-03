@@ -4,7 +4,7 @@ import { PageManager } from "../../page-objects/pageManager";
 
 
 test.beforeEach('Navigate to the application', async ({ page }) => {
-      await page.goto("http://localhost:4200/");
+      await page.goto("/");
 })
 
 test('Navigate to all pages', async ({ page }) => {

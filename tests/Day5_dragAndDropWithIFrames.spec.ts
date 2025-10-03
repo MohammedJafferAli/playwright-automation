@@ -3,7 +3,10 @@ import { expect, test } from "@playwright/test";
 test.describe("Automate drag and drop with IFrames", () => {
 
     test.beforeEach("Handling IFrames and Drag and Drop", async ({ page }) => {
-        await page.goto("https://www.globalsqa.com/demo-site/");
+        if (!process.env.GLOBALS_QA_URL) {
+            throw new Error("GLOBALS_QA_URL environment variable is not defined");
+        }
+        await page.goto(process.env.GLOBALS_QA_URL);
         await page.setViewportSize({ width: 1920, height: 1080 });
     });
 

@@ -53,6 +53,24 @@ Comprehensive end-to-end testing framework built with Playwright and TypeScript 
    npm install @faker-js/faker --save-dev
    ```
 
+6. **Install dotenv for environment variables**
+   ```bash
+   npm install dotenv --save-dev
+   ```
+
+7. **Create .env file**
+   ```bash
+   # Create .env file in project root
+   touch .env
+   ```
+   Add your environment variables:
+   ```
+   GLOBALS_QA_URL_DRAG_DROP=https://www.globalsqa.com/demo-site/draganddrop/
+   BASE_URL=http://localhost:4200
+   USERNAME=testuser
+   PASSWORD=testpass123
+   ```
+
 ## Project Structure
 
 ```
@@ -167,6 +185,31 @@ npm run allure:generate
 npm run allure:open
 ```
 
+## Environment Variables
+
+The framework supports environment variables through `.env` file:
+
+### Setup
+1. Create `.env` file in project root
+2. Add your variables:
+   ```
+   GLOBALS_QA_URL_DRAG_DROP=https://www.globalsqa.com/demo-site/draganddrop/
+   BASE_URL=http://localhost:4200
+   USERNAME=testuser
+   PASSWORD=testpass123
+   ```
+
+### Usage in Tests
+```typescript
+test('Access environment variables', async ({ page }) => {
+  const baseUrl = process.env.BASE_URL || 'http://localhost:4200';
+  const username = process.env.USERNAME || 'defaultuser';
+  
+  await page.goto(baseUrl);
+  // Use variables in your test
+});
+```
+
 ## Configuration
 
 The framework is configured via `playwright.config.ts`:
@@ -176,6 +219,7 @@ The framework is configured via `playwright.config.ts`:
 - **Retries**: 2 retries on CI, 0 locally
 - **Reporters**: HTML reporter with traces on first retry
 - **Browsers**: Chromium, Firefox, WebKit
+- **Environment Variables**: Loaded via dotenv
 
 ## Writing Tests
 
@@ -185,7 +229,7 @@ import test from "playwright/test";
 import { PageManager } from "../../page-objects/pageManager";
 
 test.beforeEach('Navigate to the application', async ({ page }) => {
-  await page.goto("http://localhost:4200/");
+  await page.goto("/");
 });
 
 test('Handle Forms layout page', async ({ page }) => {
@@ -206,7 +250,7 @@ test('Handle Datepicker page', async ({ page }) => {
 import { test, expect } from '@playwright/test';
 
 test('test description', async ({ page }) => {
-  await page.goto('http://localhost:4200/');
+  await page.goto('/');
   await expect(page.locator('h1')).toHaveText('Expected Text');
 });
 ```
@@ -271,12 +315,13 @@ faker.date.past()            // Past date
 1. **Use Page Object Model**: Framework implements POM pattern with PageManager for better maintainability
 2. **Use PageManager**: Centralized access to all page objects through PageManager class
 3. **Generate Test Data**: Use Faker.js for realistic, dynamic test data instead of hardcoded values
-4. **Use Auto-waiting**: Playwright automatically waits for elements
-5. **Prefer `expect()` assertions**: Use Playwright's built-in assertions
-6. **Handle Dynamic Content**: Use proper waiting strategies for AJAX/dynamic content
-7. **Cross-browser Testing**: Run tests across all configured browsers
-8. **Organize Tests**: Group related tests in appropriate directories (coreTopics, pageObjectTest)
-9. **Follow Naming Conventions**: Use camelCase for files and meaningful test descriptions
+4. **Use Environment Variables**: Store URLs, credentials, and configuration in `.env` file
+5. **Use Auto-waiting**: Playwright automatically waits for elements
+6. **Prefer `expect()` assertions**: Use Playwright's built-in assertions
+7. **Handle Dynamic Content**: Use proper waiting strategies for AJAX/dynamic content
+8. **Cross-browser Testing**: Run tests across all configured browsers
+9. **Organize Tests**: Group related tests in appropriate directories (coreTopics, pageObjectTest)
+10. **Follow Naming Conventions**: Use camelCase for files and meaningful test descriptions
 
 ## Troubleshooting
 
