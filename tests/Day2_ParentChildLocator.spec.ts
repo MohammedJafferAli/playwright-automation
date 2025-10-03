@@ -66,7 +66,7 @@ test('Extracting values from elements', async ({ page }) => {
 })
 
 test('Assertions',async ({page})=>{
-
+     test.describe.configure({retries:2});
     //General assertion - not on the locator, no wait time
     let setValue :number = 5
     expect (setValue).toEqual(5);

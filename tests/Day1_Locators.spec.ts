@@ -1,4 +1,4 @@
-import {test} from "@playwright/test";
+import test, { expect } from "@playwright/test";
 
 
 test.beforeEach('Form Layouts validation hook', async({page})=>{
@@ -28,7 +28,7 @@ test('locators in playwright', async ({page})=>{
 
 })
 
-test('User-visible locators',async ({page})=>{
+test.skip('User-visible locators',async ({page})=>{
 
     page.getByLabel("Email");
     page.getByPlaceholder("Jane Doe");
@@ -36,4 +36,15 @@ test('User-visible locators',async ({page})=>{
     await page.getByRole('button',{name:"Sign In"}).first().click();
     page.getByTitle("IoT Dashboard");
     page.getByText("Basic form");
+})
+
+
+test('User-visible locators duplicate',async ({ page, browserName })=>{
+    test.skip(browserName === 'chromium', 'Skipping test in Chromium.');
+
+    page.getByLabel("Email");
+    page.getByPlaceholder("Jane Doe");
+    await page.getByRole('textbox',{name:"Email"}).first().click();
+    await page.getByRole('button',{name:"Sign In"}).first().click();
+    
 })

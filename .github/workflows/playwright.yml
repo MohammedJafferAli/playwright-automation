@@ -39,7 +39,7 @@ jobs:
         path: node_modules
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
     - name: Run tests
-      run: npx playwright test --project=chromium --project=webkit
+      run: npm run test
 
   report:
     needs: test
@@ -50,9 +50,7 @@ jobs:
     - uses: actions/checkout@v4
     - name: Generate Allure Report
       timeout-minutes: 5
-      run: |
-        npm install -g allure-commandline
-        allure generate ./allure-results --clean
+      run: allure generate allure-results -o allure-report --clean && allure open allure-report
     - name: Upload Allure Report
       uses: actions/upload-artifact@v4
       with:
