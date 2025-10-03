@@ -9,6 +9,8 @@ Comprehensive end-to-end testing framework built with Playwright and TypeScript 
 - **Parallel Execution**: Tests run in parallel for faster execution
 - **Auto-waiting**: Built-in smart waiting mechanisms
 - **HTML Reports**: Detailed test reports with screenshots and traces
+- **Allure Reports**: Rich interactive test reports with detailed analytics
+- **Test Data Generation**: Faker.js integration for realistic test data
 - **CI/CD Ready**: Configured for continuous integration environments
 
 ## Prerequisites
@@ -46,6 +48,11 @@ Comprehensive end-to-end testing framework built with Playwright and TypeScript 
    npx playwright install
    ```
 
+5. **Install Faker.js for test data generation**
+   ```bash
+   npm install @faker-js/faker --save-dev
+   ```
+
 ## Project Structure
 
 ```
@@ -53,7 +60,8 @@ tests/
 ├── coreTopics/
 │   └── Task1_Calenders.spec.ts        # Calendar interaction tests
 ├── pageObjectTest/
-│   └── Day6_pageObjectModal.spec.ts   # Page Object Model implementation tests
+│   ├── Day6_pageObjectModal.spec.ts   # Page Object Model implementation tests
+│   └── Day7_dataGenerateUsingFaker.spec.ts # Faker.js test data generation
 ├── Day1_locators.spec.ts              # Element locator strategies
 ├── Day2_parentChildLocator.spec.ts    # Parent-child element relationships
 ├── Day3_autoWaits.spec.ts             # Auto-waiting mechanisms and AJAX handling
@@ -147,6 +155,18 @@ View detailed traces for failed tests:
 npx playwright show-trace trace.zip
 ```
 
+### Allure Reports
+Generate and view interactive Allure reports:
+```bash
+# Generate and open Allure report
+npm run test:allure
+
+# Or step by step
+npm run test
+npm run allure:generate
+npm run allure:open
+```
+
 ## Configuration
 
 The framework is configured via `playwright.config.ts`:
@@ -198,16 +218,65 @@ test.beforeEach(async ({ page }) => {
 });
 ```
 
+### Test Data Generation with Faker.js
+```typescript
+import { faker } from '@faker-js/faker';
+import { PageManager } from "../../page-objects/pageManager";
+
+test('Generate realistic test data', async ({ page }) => {
+  const pm = new PageManager(page);
+  await pm.navigateTo().navigateToFormLayoutPage();
+  
+  // Generate fake data
+  const firstName = faker.person.firstName();
+  const email = faker.internet.email();
+  const password = faker.internet.password();
+  
+  await pm.onFormsLayoutPage().submitInlineForm(firstName, email, true);
+  await pm.onFormsLayoutPage().submitFormUsingTheGrid(email, password, "Option 1");
+});
+```
+
+## Test Data Generation
+
+### Faker.js Integration
+The framework includes Faker.js for generating realistic test data:
+
+```typescript
+import { faker } from '@faker-js/faker';
+
+// Personal data
+faker.person.firstName()     // "John"
+faker.person.lastName()      // "Doe"
+faker.person.fullName()      // "John Doe"
+
+// Internet data
+faker.internet.email()       // "john.doe@example.com"
+faker.internet.password()    // "aB3$dE7!"
+faker.internet.url()         // "https://example.com"
+
+// Address data
+faker.location.city()        // "New York"
+faker.location.country()     // "United States"
+faker.location.zipCode()     // "12345"
+
+// Phone and dates
+faker.phone.number()         // "+1-555-123-4567"
+faker.date.future()          // Future date
+faker.date.past()            // Past date
+```
+
 ## Best Practices
 
 1. **Use Page Object Model**: Framework implements POM pattern with PageManager for better maintainability
 2. **Use PageManager**: Centralized access to all page objects through PageManager class
-3. **Use Auto-waiting**: Playwright automatically waits for elements
-4. **Prefer `expect()` assertions**: Use Playwright's built-in assertions
-5. **Handle Dynamic Content**: Use proper waiting strategies for AJAX/dynamic content
-6. **Cross-browser Testing**: Run tests across all configured browsers
-7. **Organize Tests**: Group related tests in appropriate directories (coreTopics, pageObjectTest)
-8. **Follow Naming Conventions**: Use camelCase for files and meaningful test descriptions
+3. **Generate Test Data**: Use Faker.js for realistic, dynamic test data instead of hardcoded values
+4. **Use Auto-waiting**: Playwright automatically waits for elements
+5. **Prefer `expect()` assertions**: Use Playwright's built-in assertions
+6. **Handle Dynamic Content**: Use proper waiting strategies for AJAX/dynamic content
+7. **Cross-browser Testing**: Run tests across all configured browsers
+8. **Organize Tests**: Group related tests in appropriate directories (coreTopics, pageObjectTest)
+9. **Follow Naming Conventions**: Use camelCase for files and meaningful test descriptions
 
 ## Troubleshooting
 
