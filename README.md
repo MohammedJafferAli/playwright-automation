@@ -157,6 +157,16 @@ npx playwright test --grep "Auto waiting"
 
 # Run tests NOT matching pattern
 npx playwright test --grep-invert "Alternative"
+
+# Run tests with specific tags
+npx playwright test --grep @sanity
+npx playwright test --grep @regression
+
+# Run sanity tests (from package.json)
+npm run sanity
+
+# Run regression tests (from package.json)
+npm run regression
 ```
 
 ## Viewing Test Results
@@ -220,6 +230,39 @@ The framework is configured via `playwright.config.ts`:
 - **Reporters**: HTML reporter with traces on first retry
 - **Browsers**: Chromium, Firefox, WebKit
 - **Environment Variables**: Loaded via dotenv
+
+## Test Tags
+
+Organize and run specific test suites using tags:
+
+### Available Tags
+- `@sanity` - Critical functionality tests
+- `@regression` - Full regression test suite
+- `@smoke` - Quick smoke tests
+
+### Using Tags in Tests
+```typescript
+test('@sanity Login functionality', async ({ page }) => {
+  // Test implementation
+});
+
+test('@regression @smoke Navigation test', async ({ page }) => {
+  // Test implementation
+});
+```
+
+### Running Tagged Tests
+```bash
+# Run sanity tests
+npm run sanity
+
+# Run regression tests  
+npm run regression
+
+# Run specific tags with grep
+npx playwright test --grep @sanity
+npx playwright test --grep "@regression.*@smoke"
+```
 
 ## Writing Tests
 

@@ -18,7 +18,7 @@ test('Navigate to all pages', async ({ page }) => {
 
 })
 
-test('Handle Forms layout page', async ({ page }) => {
+test('Handle Forms layout page @sanity', async ({ page }) => {
       const pm = new PageManager(page);
       await pm.navigateTo().navigateToFormLayoutPage();
       await pm.onFormsLayoutPage().submitFormUsingTheGrid("Jaffer", "Welcome@123", "Option 1");
@@ -37,7 +37,7 @@ test('Handle Datepicker page', async ({ page }) => {
 })
 
 
-test('select date range - next week', async ({ page }) => {
+test('select date range - next week @sanity', async ({ page }) => {
       const pm = new PageManager(page);
       await pm.navigateTo().navigateToDatepickerPage();
 

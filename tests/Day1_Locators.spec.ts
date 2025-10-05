@@ -8,7 +8,7 @@ test.beforeEach('Form Layouts validation hook', async({page})=>{
    await  page.getByText("Form Layouts").click();
 })
 
-test('locators in playwright', async ({page})=>{
+test('locators in playwright @smoke', async ({page})=>{
 
     await page.locator("#inputEmail1").click(); //Locate element by ID
 

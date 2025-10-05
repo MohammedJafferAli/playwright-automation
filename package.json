@@ -4,9 +4,13 @@
   "main": "index.js",
   "scripts": {
     "test": "npx playwright test",
+    "sanity": "npx playwright test tests --project=chromium --grep @sanity",
+    "regression": "npx playwright test tests --project=webkit --grep @regression",
     "allure:generate": "allure generate allure-results -o allure-report --clean",
     "allure:open": "allure open allure-report",
-    "test:allure": "npm run test && npm run allure:generate && npm run allure:open"
+    "test:allure": "npm run test && npm run allure:generate && npm run allure:open",
+    "sanity:allure": "npm run sanity && npm run allure:generate && npm run allure:open",
+    "regression:allure": "npm run regression && npm run allure:generate && npm run allure:open"
   },
   "keywords": [],
   "author": "",

@@ -7,7 +7,7 @@ test.beforeEach('Form Layouts validation hook', async ({ page }) => {
     await page.getByText("Form Layouts").click();
 })
 
-test('Locate child elements', async ({ page }) => {
+test('Locate child elements @smoke', async ({ page }) => {
 
     await page.locator("nb-card nb-radio :text-is('Option 1')").click();
     await page.locator("nb-card").locator("nb-radio").locator(":text-is('Option 1')").click();

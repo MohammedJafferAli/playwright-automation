@@ -6,7 +6,7 @@ test.beforeEach('Navigate to the application', async ({ page }) => {
     await page.goto("/");
 })
 
-test('submit the inline form using faker data', async ({ page }) => {
+test('submit the inline form using faker data @regression @sanity', async ({ page }) => {
 
     const pm = new PageManager(page);
     await pm.navigateTo().navigateToFormLayoutPage();
@@ -14,7 +14,7 @@ test('submit the inline form using faker data', async ({ page }) => {
     await page.waitForTimeout(3000);
 })
 
-test('submit the grid form using faker data', async ({ page }) => {
+test('submit the grid form using faker data @regression', async ({ page }) => {
 
     const pm = new PageManager(page);
     await pm.navigateTo().navigateToFormLayoutPage();

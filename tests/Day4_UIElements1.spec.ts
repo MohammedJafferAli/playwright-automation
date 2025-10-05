@@ -12,7 +12,7 @@ test.describe("Automate Form layout elements", () => {
         await page.getByText("Form Layouts").click();
     });
 
-    test("TextBox automation", async ({ page }) => {
+    test("TextBox automation @regression", async ({ page }) => {
         const inpUserEmail = page.locator('nb-card', { hasText: 'Using the Grid' }).getByRole('textbox', { name: "Email" });
         await inpUserEmail.fill('jaffercharliee@gmail.com');
         await inpUserEmail.clear();
@@ -39,7 +39,7 @@ test.describe("Automate Form layout elements", () => {
     });
 });
 
-test.describe("Modal and Overlays", () => {
+test.describe("Modal and Overlays @sanity @regression", () => {
 
     test("CheckBox automation", async ({ page }) => {
         await page.getByTitle('Modal & Overlays').click();
@@ -88,7 +88,7 @@ test.describe("Modal and Overlays", () => {
         }
     });
 
-    test('Handling Tooltips', async ({ page }) => {
+    test('Handling Tooltips @sanity', async ({ page }) => {
         await test.step('Navigate to Tooltip section', async () => {
             await page.getByTitle('Modal & Overlays').click();
             await page.getByTitle('Tooltip').click();
@@ -201,7 +201,7 @@ test.describe("Modal and Overlays", () => {
 
 
 
-    test('Handling Date Picker', async ({ page }) => {
+    test('Handling Date Picker @regression', async ({ page }) => {
         await page.getByTitle('Forms').click();
         await page.getByTitle('Datepicker').click();
 

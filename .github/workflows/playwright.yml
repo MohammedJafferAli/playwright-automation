@@ -3,70 +3,71 @@ name: Playwright Tests
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:  # Manual trigger
-  
-jobs:
-  installation:
-    timeout-minutes: 10
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-    - name: Install dependencies
-      run: npm ci
-    - name: Install Playwright
-      run: npx playwright install --with-deps chromium webkit
-    - name: Cache node modules
-      uses: actions/cache@v3
-      with:
-        path: node_modules
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+  workflow_dispatch:
 
+jobs:
   test:
-    needs: installation
-    timeout-minutes: 30
+    timeout-minutes: 60
     runs-on: ubuntu-latest
-    continue-on-error: true # Continue workflow even if tests fail
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
       with:
         node-version: lts/*
-    - name: Restore node modules
-      uses: actions/cache@v3
+    - name: Cache dependencies
+      uses: actions/cache@v4
       with:
-        path: node_modules
+        path: |
+          ~/.npm
+          node_modules
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-    - name: Install dependencies if cache miss
+        restore-keys: |
+          ${{ runner.os }}-node-
+    - name: Install dependencies
       run: npm ci
     - name: Install Playwright browsers
       run: npx playwright install --with-deps chromium webkit
     - name: Run tests
       run: npm run test
+      continue-on-error: true
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: allure-results
+        path: allure-results/
+        retention-days: 30
 
   report:
     needs: test
-    if: always() # This ensures report runs even if test job fails
+    if: always()
     timeout-minutes: 20
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+    - name: Download test results
+      uses: actions/download-artifact@v4
+      with:
+        name: allure-results
+        path: allure-results/
+    - name: Install Allure
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y openjdk-11-jdk
+        wget https://github.com/allure-framework/allure2/releases/download/2.24.0/allure-2.24.0.tgz
+        tar -zxf allure-2.24.0.tgz
+        sudo mv allure-2.24.0 /opt/allure
+        echo "/opt/allure/bin" >> $GITHUB_PATH
     - name: Generate Allure Report
-      timeout-minutes: 5
-      run: allure generate allure-results -o allure-report --clean && allure open allure-report
+      run: allure generate allure-results -o allure-report --clean
     - name: Upload Allure Report
       uses: actions/upload-artifact@v4
       with:
         name: allure-report
         path: allure-report/
         retention-days: 30
-    
-    - name: Zip Allure Report
-      run: zip -r allure-report.zip allure-report/
-    
     - name: Send Email with Report
+      if: always()
       uses: dawidd6/action-send-mail@v3
       with:
         server_address: smtp.gmail.com
@@ -75,15 +76,14 @@ jobs:
         password: ${{ secrets.EMAIL_PASSWORD }}
         subject: 'Playwright Test Results - ${{ github.repository }}'
         to: "jaffercharliebe@gmail.com"
-        from: ${{ secrets.EMAIL_SENDER }}        
+        from: ${{ secrets.EMAIL_SENDER }}
         body: |
           Test execution completed for commit: ${{ github.sha }}
           
           Repository: ${{ github.repository }}
           Branch: ${{ github.ref_name }}
-          Workflow: ${{ github.workflow }}
-          
-          Please find the Allure test report attached.
           
           View full results: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         attachments: allure-report.zip
+    - name: Create report zip
+      run: zip -r allure-report.zip allure-report/
