@@ -5,12 +5,15 @@ Comprehensive end-to-end testing framework built with Playwright and TypeScript 
 ## Features
 
 - **Cross-browser Testing**: Supports Chromium, Firefox, and WebKit
+- **Mobile Testing**: iPhone and Android device emulation
 - **TypeScript Support**: Full TypeScript integration for better code quality
 - **Parallel Execution**: Tests run in parallel for faster execution
 - **Auto-waiting**: Built-in smart waiting mechanisms
 - **HTML Reports**: Detailed test reports with screenshots and traces
 - **Allure Reports**: Rich interactive test reports with detailed analytics
 - **Test Data Generation**: Faker.js integration for realistic test data
+- **Data-Driven Testing**: Multiple test scenarios from external data
+- **Custom Fixtures**: Reusable test setup and teardown
 - **CI/CD Ready**: Configured for continuous integration environments
 
 ## Prerequisites
@@ -79,7 +82,10 @@ tests/
 │   └── Task1_Calenders.spec.ts        # Calendar interaction tests
 ├── pageObjectTest/
 │   ├── Day6_pageObjectModal.spec.ts   # Page Object Model implementation tests
-│   └── Day7_dataGenerateUsingFaker.spec.ts # Faker.js test data generation
+│   ├── Day7_dataGenerateUsingFaker.spec.ts # Faker.js test data generation
+│   ├── Day8_testWithFixtures.spec.ts  # Custom fixtures implementation
+│   ├── Day9_testOnMobileBrowser.spec.ts # Mobile browser testing
+│   └── Day10_DataDrivenTest.spec.ts   # Data-driven testing approach
 ├── Day1_locators.spec.ts              # Element locator strategies
 ├── Day2_parentChildLocator.spec.ts    # Parent-child element relationships
 ├── Day3_autoWaits.spec.ts             # Auto-waiting mechanisms and AJAX handling
@@ -87,11 +93,20 @@ tests/
 └── Day5_dragAndDropWithIFrames.spec.ts # Drag & drop and iframe handling
 
 page-objects/
-├── datePickerPage.ts          # Date picker page object
-├── formsLayoutPage.ts         # Forms layout page object
-├── navigationPage.ts          # Navigation page object
+├── DatePickerPage.ts          # Date picker page object
+├── FormsLayoutPage.ts         # Forms layout page object
+├── NavigationPage.ts          # Navigation page object
 ├── helperBase.ts              # Base helper class
-└── pageManager.ts             # Central page manager for all page objects
+├── pageManager.ts             # Central page manager for all page objects
+└── testOptions.ts             # Custom test fixtures
+
+data/
+├── testData.ts                # Static test data
+├── formTestCases.ts           # Data-driven test cases
+└── mobileTestData.ts          # Mobile-specific test scenarios
+
+utils/
+└── mobileHelper.ts            # Mobile browser utilities
 ```
 
 ## Running Tests
@@ -115,7 +130,20 @@ npx playwright test --project=webkit
 
 ### 3. Run Specific Test File
 ```bash
+# Run specific test file
 npx playwright test tests/Day3_autoWaits.spec.ts
+
+# Run test file in specific directory
+npx playwright test tests/pageObjectTest/Day6_pageObjectModal.spec.ts
+
+# Run all tests in a directory
+npx playwright test tests/pageObjectTest/
+
+# Run mobile tests
+npx playwright test --project=mobile
+
+# Run data-driven tests
+npx playwright test tests/pageObjectTest/Day10_DataDrivenTest.spec.ts
 ```
 
 ### 4. Run Tests in Headed Mode (Visible Browser)

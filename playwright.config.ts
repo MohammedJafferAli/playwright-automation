@@ -69,6 +69,14 @@ export default defineConfig({
         }
       }
     },
+    {
+      name: 'mobile',
+      use: { ...devices['iPhone 14 Pro'], headless: true },
+      testMatch: [
+        'tests/pageObjectTest/Day9_testOnMobileBrowser.spec.ts',
+        'tests/pageObjectTest/Day10_DataDrivenTest.spec.ts'
+      ]
+    }
 
     /* Test against mobile viewports. */
     // {
