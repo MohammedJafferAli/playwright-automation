@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "npx playwright test",
+    "test": "npx playwright test --project=chromium",
     "sanity": "npx playwright test tests --project=chromium --grep @sanity",
     "regression": "npx playwright test tests --project=webkit --grep @regression",
     "allure:generate": "allure generate allure-results -o allure-report --clean",

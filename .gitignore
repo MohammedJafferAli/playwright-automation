@@ -16,6 +16,7 @@ yarn.lock
 /allure-results/
 /allure-report/
 *.zip
+*.tar.gz
 
 # IDE
 .vscode/
