@@ -60,6 +60,8 @@ jobs:
         echo "/opt/allure/bin" >> $GITHUB_PATH
     - name: Generate Allure Report
       run: allure generate allure-results -o allure-report --clean
+    - name: Create report zip
+      run: zip -r allure-report.zip allure-report/
     - name: Upload Allure Report
       uses: actions/upload-artifact@v4
       with:
@@ -85,5 +87,3 @@ jobs:
           
           View full results: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         attachments: allure-report.zip
-    - name: Create report zip
-      run: zip -r allure-report.zip allure-report/
